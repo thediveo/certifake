@@ -1,6 +1,6 @@
 module github.com/thediveo/certifake
 
-go 1.27.2
+go 1.26.9
 
 require (
 	github.com/onsi/ginkgo/v2 v2.33.1
