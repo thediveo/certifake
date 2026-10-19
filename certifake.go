@@ -27,6 +27,7 @@ import (
 	"math/big"
 	"net"
 	"net/netip"
+	"os"
 	"time"
 
 	"github.com/thediveo/nonstd/xslices"
@@ -37,6 +38,11 @@ const (
 	PEMTypePrivateKey  = "PRIVATE KEY"
 )
 
+// New returns a new certificate configured using the passed options; otherwise,
+// it returns an error. The certificate returned is valid for one hour, use
+// [ValidWithin] to configure a different validity duration. The certificate has
+// no SAN configured. Use [WithDomain] and/or [WithIP] to appropriately
+// configure the certificate.
 func New(opts ...Opt) (tls.Certificate, error) {
 	o := Options{
 		validWithin: 1 * time.Hour,
@@ -88,6 +94,8 @@ func New(opts ...Opt) (tls.Certificate, error) {
 	}, nil
 }
 
+// ToPEM returns the certificate PEM together with the key PEM; otherwise, it
+// returns an error.
 func ToPEM(cert tls.Certificate) (certpem []byte, keypem []byte, err error) {
 	if len(cert.Certificate) == 0 {
 		return nil, nil, errors.New("certificate chain empty")
@@ -107,4 +115,22 @@ func ToPEM(cert tls.Certificate) (certpem []byte, keypem []byte, err error) {
 	})
 
 	return certpem, keypem, nil
+}
+
+// Save a certificate to their certificate and private key PEM files; otherwise,
+// returns an error. The certificate file permissions should be 0644 (readable
+// by all; readable and writeable by owner) and the private key file permissions
+// 0600 (only readable and writeable by user).
+func Save(cert tls.Certificate, certpath string, certperm os.FileMode, keypath string, keyperm os.FileMode) error {
+	certpem, keypem, err := ToPEM(cert)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(certpath, certpem, certperm); err != nil {
+		return fmt.Errorf("cannot write certificate, reason: %w", err)
+	}
+	if err := os.WriteFile(keypath, keypem, keyperm); err != nil {
+		return fmt.Errorf("cannot write private key, reason: %w", err)
+	}
+	return nil
 }

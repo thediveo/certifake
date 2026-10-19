@@ -3,7 +3,7 @@
 [![PkgGoDev](https://img.shields.io/badge/-reference-blue?logo=go&logoColor=white&labelColor=505050)](https://pkg.go.dev/github.com/thediveo/certifake)
 [![License](https://img.shields.io/github/license/thediveo/certifake)](https://img.shields.io/github/license/thediveo/certifake)
 ![build and test](https://github.com/thediveo/certifake/actions/workflows/buildandtest.yaml/badge.svg?branch=master)
-![Coverage](https://img.shields.io/badge/Coverage-92.3%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-87.2%25-brightgreen)
 
 `certifake` creates self-signed TLS certificates for use in unit tests.
 
